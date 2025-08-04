@@ -840,7 +840,13 @@ function handleFormSubmission(event) {
             data[`rating_${feature}`] = rating;
         });
         
-        // Log the data (in a real app, you'd send this to your server)
+        // Add timestamp
+        data.timestamp = new Date().toISOString();
+        
+        // Send to Supabase database
+        sendToSupabase(data);
+        
+        // Also log to console for debugging
         console.log('Form data:', data);
         
         // Show success message
@@ -854,6 +860,74 @@ function handleFormSubmission(event) {
         // Reset all conditional sections
         resetConditionalSections();
     }
+}
+
+// Send data to Supabase
+function sendToSupabase(data) {
+    // Get Supabase credentials from config
+    const SUPABASE_URL = SUPABASE_CONFIG.URL;
+    const SUPABASE_ANON_KEY = SUPABASE_CONFIG.ANON_KEY;
+    
+    if (SUPABASE_URL === 'YOUR_SUPABASE_PROJECT_URL') {
+        console.log('Supabase integration not set up yet. Data logged to console.');
+        return;
+    }
+    
+    // Transform data for database
+    const dbData = {
+        business_name: data.businessName || '',
+        business_type: data.businessType || '',
+        business_type_other: data.businessTypeOther || '',
+        location: data.location || '',
+        team_size: data.teamSize || '',
+        uses_software: data.usesSoftware || '',
+        current_software: data.currentSoftware || '',
+        software_pain_points: data.softwarePainPoints || '',
+        missing_features: data.missingFeatures || '',
+        current_system: data.currentSystem || '',
+        why_no_digital: data.whyNoDigital || '',
+        needs_lead_time: data.needsLeadTime || '',
+        lead_time: data.leadTime || '',
+        slot_duration: data.slotDuration || '',
+        customer_struggles: data.customerStruggles || [],
+        reminders_help: data.remindersHelp || '',
+        rating_price: parseInt(data.rating_price) || 0,
+        rating_ease: parseInt(data.rating_ease) || 0,
+        rating_design: parseInt(data.rating_design) || 0,
+        rating_support: parseInt(data.rating_support) || 0,
+        wish_list: data.wishList || '',
+        contact_method: data.contactMethod || '',
+        email: data.email || '',
+        instagram: data.instagram || '',
+        phone: data.phone || '',
+        gdpr_consent: data.gdprConsent === 'on' || false
+    };
+    
+    fetch(`${SUPABASE_URL}/rest/v1/beta_signups`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+        },
+        body: JSON.stringify(dbData)
+    })
+    .then(response => {
+        if (response.ok) {
+            console.log('Data sent to Supabase successfully');
+        } else {
+            console.error('Failed to send data to Supabase:', response.status);
+            return response.json();
+        }
+    })
+    .then(errorData => {
+        if (errorData) {
+            console.error('Supabase error details:', errorData);
+        }
+    })
+    .catch(error => {
+        console.error('Error sending data to Supabase:', error);
+    });
 }
 
 // Reset conditional sections
