@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookAll - Beta Signup for UK Micro-businesses</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#667eea',
+                        secondary: '#ff6b6b',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom select styling for consistent appearance */
+        .custom-select {
+            width: 100%;
+            padding: 12px 16px;
+            background-color: white !important;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            color: #374151;
+            font-size: 16px;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            position: relative;
+            cursor: pointer;
+            box-sizing: border-box;
+        }
+
+        .custom-select:focus {
+            border-color: #667eea;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .custom-select:hover {
+            border-color: #667eea;
+        }
+
+        /* For consistent dropdown colouring */
+        .custom-select option {
+            background: white !important;
+            color: #374151 !important;
+            padding: 12px 16px !important;
+            font-size: 16px !important;
+        }
+        
+        /* Force white background on dropdown */
+        .custom-select:focus option,
+        .custom-select option:checked,
+        .custom-select option:hover {
+            background: white !important;
+            color: #374151 !important;
+        }
+        
+        /* Additional browser-specific overrides */
+        .custom-select option::-ms-expand {
+            display: none;
+        }
+        
+        /* Webkit browsers (Safari, Chrome) */
+        .custom-select::-webkit-listbox {
+            background: white !important;
+        }
+        
+        .custom-select::-webkit-listitem {
+            background: white !important;
+            color: #374151 !important;
+        }
+
+        /* Custom dropdown arrow */
+        .custom-select {
+            background-image: url("data:image/svg+xml;utf8,<svg fill='%236b7280' viewBox='0 0 10 6' xmlns='http://www.w3.org/2000/svg'><path d='M0 0l5 6 5-6'/></svg>");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 18px 10px;
+            padding-right: 40px;
+            background-color: white !important;
+        }
+
+        /* Mobile optimizations */
+        @media (max-width: 768px) {
+            .custom-select {
+                font-size: 16px;
+                padding: 16px 20px;
+                padding-right: 40px;
+                min-height: 56px;
+            }
+            
+            .custom-select option {
+                padding: 16px 20px;
+                font-size: 16px;
+                background: white !important;
+            }
+        }
+        
+        /* Custom dropdown container */
+        .dropdown-container {
+            position: relative;
+            width: 100%;
+        }
+        
+        .dropdown-button {
+            width: 100%;
+            padding: 12px 16px;
+            background-color: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            color: #374151;
+            font-size: 16px;
+            cursor: pointer;
+            text-align: left;
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .dropdown-button:focus {
+            border-color: #667eea;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .dropdown-button:hover {
+            border-color: #667eea;
+        }
+        
+        .dropdown-arrow {
+            width: 16px;
+            height: 16px;
+            transition: transform 0.2s ease;
+        }
+        
+        .dropdown-arrow.open {
+            transform: rotate(180deg);
+        }
+        
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .dropdown-menu.open {
+            display: block;
+        }
+        
+        .dropdown-option {
+            padding: 12px 16px;
+            cursor: pointer;
+            color: #374151;
+            font-size: 16px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        
+        .dropdown-option:hover {
+            background-color: #f9fafb;
+        }
+        
+        .dropdown-option:last-child {
+            border-bottom: none;
+        }
+        
+        /* Mobile optimizations for custom dropdown */
+        @media (max-width: 768px) {
+            .dropdown-button {
+                font-size: 16px;
+                padding: 16px 20px;
+                min-height: 56px;
+            }
+            
+            .dropdown-option {
+                padding: 16px 20px;
+                font-size: 16px;
+            }
+            
+            .dropdown-menu {
+                max-height: 250px;
+            }
+        }
+        
+        /* Form step visibility */
+        .form-step {
+            display: none;
+        }
+        
+        .form-step.active {
+            display: block;
+        }
+        
+        /* Star rating styling */
+        .star {
+            transition: color 0.2s ease;
+        }
+        
+        .star.active {
+            color: #fbbf24 !important;
+        }
+        
+        /* Override Tailwind classes for active stars */
+        .star.active.text-gray-300 {
+            color: #fbbf24 !important;
+        }
+        
+        .star.active.hover\:text-yellow-400 {
+            color: #fbbf24 !important;
+        }
+    </style>
+</head>
+<body class="font-inter bg-gray-50">
+    <!-- Compact Hero Section -->
+    <section class="bg-gradient-to-br from-primary to-purple-600 text-white py-8 md:py-12">
+        <div class="max-w-4xl mx-auto px-4">
+            <div class="text-center">
+                <h1 class="text-xl md:text-2xl font-bold mb-4 leading-tight">Whether you wash cars, bake cakes, walk dogs, or run a cosy nail salon - we're building something just for you.</h1>
+                <div class="flex justify-center gap-2 mb-4">
+                    <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center text-lg backdrop-blur-sm">🚗</div>
+                    <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center text-lg backdrop-blur-sm">🍰</div>
+                    <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center text-lg backdrop-blur-sm">🐕</div>
+                    <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center text-lg backdrop-blur-sm">💅</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Feedback Form -->
+    <section class="py-8 bg-gray-50" id="feedback-form">
+        <div class="max-w-2xl mx-auto px-4">            
+            <form id="beta-form" class="space-y-6">
+                <!-- Step 1: Business Info -->
+                <div class="form-step active" data-step="1">
+                    <div class="text-center mb-8">
+                        <h3 class="text-2xl font-semibold text-gray-800 mb-2">Tell us about your business</h3>
+                        <p class="text-gray-600">This takes about 2 minutes and helps us build exactly what you need.</p>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                        <label for="business-name" class="block text-sm font-semibold text-gray-700 mb-2">Business name <span class="text-red-500">*</span></label>
+                        <input type="text" id="business-name" name="businessName" placeholder="e.g. Sarah's Sweet Treats" class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none text-base">
+                    </div>
+                    
+                    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                        <label for="business-type" class="block text-sm font-semibold text-gray-700 mb-2">Type of business <span class="text-red-500">*</span></label>
+                        <div class="dropdown-container">
+                            <button type="button" class="dropdown-button" id="business-type-button">
+                                <span id="business-type-display">Select your business type</span>
+                                <svg class="dropdown-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                            <div class="dropdown-menu" id="business-type-menu">
+                                <div class="dropdown-option" data-value="">Select your business type</div>
+                                <div class="dropdown-option" data-value="beauty">Beauty & Wellness</div>
+                                <div class="dropdown-option" data-value="food">Food & Catering</div>
+                                <div class="dropdown-option" data-value="cleaning">Cleaning & Maintenance</div>
+                                <div class="dropdown-option" data-value="pet">Pet Services</div>
+                                <div class="dropdown-option" data-value="transport">Transport & Delivery</div>
+                                <div class="dropdown-option" data-value="creative">Creative & Design</div>
+                                <div class="dropdown-option" data-value="other">Other</div>
+                            </div>
+                            <input type="hidden" id="business-type" name="businessType" value="">
+                        </div>
+                        <div class="other-input mt-4" id="other-business-type" style="display: none;">
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Tell us about your business <span class="text-red-500">*</span></label>
+                            <input type="text" name="businessTypeOther" placeholder="Tell us about your business" class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none text-base">
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                        <label for="location" class="block text-sm font-semibold text-gray-700 mb-2">Location <span class="text-red-500">*</span></label>
+                        <input type="text" id="location" name="location" placeholder="e.g. Manchester, UK" class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none text-base">
+                    </div>
+                    
+                    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                        <label for="team-size" class="block text-sm font-semibold text-gray-700 mb-2">Number of people in business <span class="text-red-500">*</span></label>
+                        <div class="dropdown-container">
+                            <button type="button" class="dropdown-button" id="team-size-button">
+                                <span id="team-size-display">Select team size</span>
+                                <svg class="dropdown-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                            <div class="dropdown-menu" id="team-size-menu">
+                                <div class="dropdown-option" data-value="">Select team size</div>
+                                <div class="dropdown-option" data-value="1">Just me (solo)</div>
+                                <div class="dropdown-option" data-value="2-3">2-3 people</div>
+                                <div class="dropdown-option" data-value="4-5">4-5 people</div>
+                                <div class="dropdown-option" data-value="6+">6+ people</div>
+                            </div>
+                            <input type="hidden" id="team-size" name="teamSize" value="">
+                        </div>
+                    </div>
+                    
+                    <button type="button" class="w-full bg-primary text-white py-3 px-6 rounded-lg font-semibold hover:bg-primary/90 transition-colors" onclick="nextStep()">Next</button>
+                </div>
+
+                <!-- Step 2: Current Tools -->
+                <div class="form-step" data-step="2">
+                    <div class="text-center mb-8">
+                        <h3 class="text-2xl font-semibold text-gray-800 mb-2">Your Current Booking System</h3>
+                        <p class="text-gray-600">Tell us about how you handle bookings now</p>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                        <label class="block text-sm font-semibold text-gray-700 mb-4">Do you use any software/app for bookings? <span class="text-red-500">*</span></label>
+                        <div class="space-y-3">
+                            <label class="flex items-center cursor-pointer">
+                                <input type="radio" name="usesSoftware" value="yes" class="w-4 h-4 text-primary border-gray-300 focus:ring-primary">
+                                <span class="ml-3 text-gray-700">Yes</span>
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="radio" name="usesSoftware" value="no" class="w-4 h-4 text-primary border-gray-300 focus:ring-primary">
+                                <span class="ml-3 text-gray-700">No</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="conditional-section space-y-6" id="software-details" style="display: none;">
+                        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                            <label for="current-software" class="block text-sm font-semibold text-gray-700 mb-2">What software do you use? <span class="text-red-500">*</span></label>
+                            <input type="text" id="current-software" name="currentSoftware" placeholder="e.g. Calendly, Acuity, Booksy..." class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none text-base">
+                        </div>
+                        
+                        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                            <label for="software-pain-points" class="block text-sm font-semibold text-gray-700 mb-2">What's the biggest headache with your current system?</label>
+                            <textarea id="software-pain-points" name="softwarePainPoints" placeholder="Tell us what drives you mad about your current booking process" class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none text-base min-h-[120px] resize-y"></textarea>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                            <label for="missing-features" class="block text-sm font-semibold text-gray-700 mb-2">What features are you missing?</label>
+                            <textarea id="missing-features" name="missingFeatures" placeholder="What would make your life easier?" class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none text-base min-h-[120px] resize-y"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="conditional-section space-y-6" id="no-software-details" style="display: none;">
+                        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                            <label for="current-system" class="block text-sm font-semibold text-gray-700 mb-2">How do you handle bookings currently? <span class="text-red-500">*</span></label>
+                            <div class="dropdown-container">
+                                <button type="button" class="dropdown-button" id="current-system-button">
+                                    <span id="current-system-display">Select your current method</span>
+                                    <svg class="dropdown-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                    </svg>
+                                </button>
+                                <div class="dropdown-menu" id="current-system-menu">
+                                    <div class="dropdown-option" data-value="">Select your current method</div>
+                                    <div class="dropdown-option" data-value="instagram">Instagram DMs</div>
+                                    <div class="dropdown-option" data-value="whatsapp">WhatsApp</div>
+                                    <div class="dropdown-option" data-value="phone">Phone calls</div>
+                                    <div class="dropdown-option" data-value="paper">Paper diary</div>
+                                    <div class="dropdown-option" data-value="email">Email</div>
+                                    <div class="dropdown-option" data-value="other">Other</div>
+                                </div>
+                                <input type="hidden" id="current-system" name="currentSystem" value="">
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                            <label for="why-no-digital" class="block text-sm font-semibold text-gray-700 mb-2">Why haven't you tried a digital booking tool? <span class="text-red-500">*</span></label>
+                            <textarea id="why-no-digital" name="whyNoDigital" placeholder="What's stopping you? Cost, complexity, time..." class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none text-base min-h-[120px] resize-y"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-4 mt-8">
+                        <button type="button" class="flex-1 bg-gray-200 text-gray-700 py-3 px-6 rounded-lg font-semibold hover:bg-gray-300 transition-colors" onclick="prevStep()">Back</button>
+                        <button type="button" class="flex-1 bg-primary text-white py-3 px-6 rounded-lg font-semibold hover:bg-primary/90 transition-colors" onclick="nextStep()">Next</button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Service Specific -->
+                <div class="form-step" data-step="3">
+                    <div class="text-center mb-8">
+                        <h3 class="text-2xl font-semibold text-gray-800 mb-2">Your Services</h3>
+                        <p class="text-gray-600">Help us understand your booking needs</p>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Does your business need extra time for certain orders? <span class="text-red-500">*</span></label>
+                        <p class="text-sm text-gray-600 mb-4 italic">Like cakes that need 48 hours notice, or custom designs that take longer</p>
+                        <div class="space-y-3">
+                            <label class="flex items-center cursor-pointer">
+                                <input type="radio" name="needsLeadTime" value="yes" class="w-4 h-4 text-primary border-gray-300 focus:ring-primary">
+                                <span class="ml-3 text-gray-700">Yes</span>
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="radio" name="needsLeadTime" value="no" class="w-4 h-4 text-primary border-gray-300 focus:ring-primary">
+                                <span class="ml-3 text-gray-700">No</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="conditional-section space-y-6" id="lead-time-details" style="display: none;">
+                        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                            <label for="lead-time" class="block text-sm font-semibold text-gray-700 mb-2">How much notice do you typically need? <span class="text-red-500">*</span></label>
+                            <div class="dropdown-container">
+                                <button type="button" class="dropdown-button" id="lead-time-button">
+                                    <span id="lead-time-display">Select lead time</span>
+                                    <svg class="dropdown-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                    </svg>
+                                </button>
+                                <div class="dropdown-menu" id="lead-time-menu">
+                                    <div class="dropdown-option" data-value="">Select lead time</div>
+                                    <div class="dropdown-option" data-value="same-day">Same day</div>
+                                    <div class="dropdown-option" data-value="24h">24 hours</div>
+                                    <div class="dropdown-option" data-value="48h">48 hours</div>
+                                    <div class="dropdown-option" data-value="1-week">1 week</div>
+                                    <div class="dropdown-option" data-value="2-weeks">2 weeks</div>
+                                    <div class="dropdown-option" data-value="custom">Custom</div>
+                                </div>
+                                <input type="hidden" id="lead-time" name="leadTime" value="">
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                            <label for="slot-duration" class="block text-sm font-semibold text-gray-700 mb-2">How long are your typical appointment slots? <span class="text-red-500">*</span></label>
+                            <div class="dropdown-container">
+                                <button type="button" class="dropdown-button" id="slot-duration-button">
+                                    <span id="slot-duration-display">Select duration</span>
+                                    <svg class="dropdown-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                    </svg>
+                                </button>
+                                <div class="dropdown-menu" id="slot-duration-menu">
+                                    <div class="dropdown-option" data-value="">Select duration</div>
+                                    <div class="dropdown-option" data-value="15min">15 minutes</div>
+                                    <div class="dropdown-option" data-value="30min">30 minutes</div>
+                                    <div class="dropdown-option" data-value="1hour">1 hour</div>
+                                    <div class="dropdown-option" data-value="1.5hour">1.5 hours</div>
+                                    <div class="dropdown-option" data-value="2hour">2 hours</div>
+                                    <div class="dropdown-option" data-value="custom">Custom</div>
+                                </div>
+                                <input type="hidden" id="slot-duration" name="slotDuration" value="">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-4 mt-8">
+                        <button type="button" class="flex-1 bg-gray-200 text-gray-700 py-3 px-6 rounded-lg font-semibold hover:bg-gray-300 transition-colors" onclick="prevStep()">Back</button>
+                        <button type="button" class="flex-1 bg-primary text-white py-3 px-6 rounded-lg font-semibold hover:bg-primary/90 transition-colors" onclick="nextStep()">Next</button>
+                    </div>
+                </div>
+
+                <!-- Step 4: Customer Experience -->
+                <div class="form-step" data-step="4">
+                    <div class="text-center mb-8">
+                        <h3 class="text-2xl font-semibold text-gray-800 mb-2">Your Customers</h3>
+                        <p class="text-gray-600">Help us understand what your customers struggle with</p>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                        <label class="block text-sm font-semibold text-gray-700 mb-4">What do your customers struggle with most? <span class="text-red-500">*</span></label>
+                        <div class="space-y-3">
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" name="customerStruggles" value="booking" class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary">
+                                <span class="ml-3 text-gray-700">Finding time to book</span>
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" name="customerStruggles" value="reminders" class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary">
+                                <span class="ml-3 text-gray-700">Forgetting appointments</span>
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" name="customerStruggles" value="communication" class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary">
+                                <span class="ml-3 text-gray-700">Getting in touch with me</span>
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" name="customerStruggles" value="payments" class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary">
+                                <span class="ml-3 text-gray-700">Paying for services</span>
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" name="customerStruggles" value="other" class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary">
+                                <span class="ml-3 text-gray-700">Other</span>
+                            </label>
+                        </div>
+                        <div class="other-input mt-4" id="customer-struggles-other" style="display: none;">
+                            <input type="text" name="customerStrugglesOther" placeholder="Tell us more" class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none text-base">
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                        <label class="block text-sm font-semibold text-gray-700 mb-4">Would appointment reminders help your customers? <span class="text-red-500">*</span></label>
+                        <div class="space-y-3">
+                            <label class="flex items-center cursor-pointer">
+                                <input type="radio" name="remindersHelp" value="yes" class="w-4 h-4 text-primary border-gray-300 focus:ring-primary">
+                                <span class="ml-3 text-gray-700">Yes, definitely</span>
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="radio" name="remindersHelp" value="maybe" class="w-4 h-4 text-primary border-gray-300 focus:ring-primary">
+                                <span class="ml-3 text-gray-700">Maybe</span>
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="radio" name="remindersHelp" value="no" class="w-4 h-4 text-primary border-gray-300 focus:ring-primary">
+                                <span class="ml-3 text-gray-700">No, not really</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                        <label class="block text-sm font-semibold text-gray-700 mb-4">How do your customers prefer to communicate?</label>
+                        <div class="space-y-3">
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" name="communicationPrefs" value="phone" class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary">
+                                <span class="ml-3 text-gray-700">Phone</span>
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" name="communicationPrefs" value="whatsapp" class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary">
+                                <span class="ml-3 text-gray-700">WhatsApp</span>
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" name="communicationPrefs" value="instagram" class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary">
+                                <span class="ml-3 text-gray-700">Instagram</span>
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" name="communicationPrefs" value="email" class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary">
+                                <span class="ml-3 text-gray-700">Email</span>
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" name="communicationPrefs" value="other" class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary">
+                                <span class="ml-3 text-gray-700">Other</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-4 mt-8">
+                        <button type="button" class="flex-1 bg-gray-200 text-gray-700 py-3 px-6 rounded-lg font-semibold hover:bg-gray-300 transition-colors" onclick="prevStep()">Back</button>
+                        <button type="button" class="flex-1 bg-primary text-white py-3 px-6 rounded-lg font-semibold hover:bg-primary/90 transition-colors" onclick="nextStep()">Next</button>
+                    </div>
+                </div>
+
+                <!-- Step 5: Tool Preferences -->
+                <div class="form-step" data-step="5">
+                    <div class="text-center mb-8">
+                        <h3 class="text-2xl font-semibold text-gray-800 mb-2">Your Wish List</h3>
+                        <p class="text-gray-600">What features would make you love a booking tool?</p>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                        <label class="block text-sm font-semibold text-gray-700 mb-4">Essential features you need</label>
+                        <div class="space-y-3">
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" name="essentialFeatures" value="online-booking" class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary">
+                                <span class="ml-3 text-gray-700">Online booking calendar</span>
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" name="essentialFeatures" value="payments" class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary">
+                                <span class="ml-3 text-gray-700">Payment processing</span>
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" name="essentialFeatures" value="reminders" class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary">
+                                <span class="ml-3 text-gray-700">Appointment reminders</span>
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" name="essentialFeatures" value="customisation" class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary">
+                                <span class="ml-3 text-gray-700">Custom branding</span>
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" name="essentialFeatures" value="integrations" class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary">
+                                <span class="ml-3 text-gray-700">Social media integration</span>
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" name="essentialFeatures" value="reports" class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary">
+                                <span class="ml-3 text-gray-700">Simple reports</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                        <label class="block text-sm font-semibold text-gray-700 mb-4">How important is each of these to you?</label>
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-700">Free/low price</span>
+                                <div class="rating-stars flex gap-1" data-feature="price">
+                                    <span class="star text-2xl text-gray-300 cursor-pointer hover:text-yellow-400" data-value="1">★</span>
+                                    <span class="star text-2xl text-gray-300 cursor-pointer hover:text-yellow-400" data-value="2">★</span>
+                                    <span class="star text-2xl text-gray-300 cursor-pointer hover:text-yellow-400" data-value="3">★</span>
+                                    <span class="star text-2xl text-gray-300 cursor-pointer hover:text-yellow-400" data-value="4">★</span>
+                                    <span class="star text-2xl text-gray-300 cursor-pointer hover:text-yellow-400" data-value="5">★</span>
+                                </div>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-700">Easy to use</span>
+                                <div class="rating-stars flex gap-1" data-feature="ease">
+                                    <span class="star text-2xl text-gray-300 cursor-pointer hover:text-yellow-400" data-value="1">★</span>
+                                    <span class="star text-2xl text-gray-300 cursor-pointer hover:text-yellow-400" data-value="2">★</span>
+                                    <span class="star text-2xl text-gray-300 cursor-pointer hover:text-yellow-400" data-value="3">★</span>
+                                    <span class="star text-2xl text-gray-300 cursor-pointer hover:text-yellow-400" data-value="4">★</span>
+                                    <span class="star text-2xl text-gray-300 cursor-pointer hover:text-yellow-400" data-value="5">★</span>
+                                </div>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-700">Good design</span>
+                                <div class="rating-stars flex gap-1" data-feature="design">
+                                    <span class="star text-2xl text-gray-300 cursor-pointer hover:text-yellow-400" data-value="1">★</span>
+                                    <span class="star text-2xl text-gray-300 cursor-pointer hover:text-yellow-400" data-value="2">★</span>
+                                    <span class="star text-2xl text-gray-300 cursor-pointer hover:text-yellow-400" data-value="3">★</span>
+                                    <span class="star text-2xl text-gray-300 cursor-pointer hover:text-yellow-400" data-value="4">★</span>
+                                    <span class="star text-2xl text-gray-300 cursor-pointer hover:text-yellow-400" data-value="5">★</span>
+                                </div>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-700">Customer support</span>
+                                <div class="rating-stars flex gap-1" data-feature="support">
+                                    <span class="star text-2xl text-gray-300 cursor-pointer hover:text-yellow-400" data-value="1">★</span>
+                                    <span class="star text-2xl text-gray-300 cursor-pointer hover:text-yellow-400" data-value="2">★</span>
+                                    <span class="star text-2xl text-gray-300 cursor-pointer hover:text-yellow-400" data-value="3">★</span>
+                                    <span class="star text-2xl text-gray-300 cursor-pointer hover:text-yellow-400" data-value="4">★</span>
+                                    <span class="star text-2xl text-gray-300 cursor-pointer hover:text-yellow-400" data-value="5">★</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                        <label for="wish-list" class="block text-sm font-semibold text-gray-700 mb-2">The one thing that would make you love a booking tool is... <span class="text-red-500">*</span></label>
+                        <textarea id="wish-list" name="wishList" placeholder="Tell us your dream feature or what would make your life so much easier" class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none text-base min-h-[120px] resize-y"></textarea>
+                    </div>
+                    
+                    <div class="flex gap-4 mt-8">
+                        <button type="button" class="flex-1 bg-gray-200 text-gray-700 py-3 px-6 rounded-lg font-semibold hover:bg-gray-300 transition-colors" onclick="prevStep()">Back</button>
+                        <button type="button" class="flex-1 bg-primary text-white py-3 px-6 rounded-lg font-semibold hover:bg-primary/90 transition-colors" onclick="nextStep()">Next</button>
+                    </div>
+                </div>
+
+                <!-- Step 6: Contact Info -->
+                <div class="form-step" data-step="6">
+                    <div class="text-center mb-8">
+                        <h3 class="text-2xl font-semibold text-gray-800 mb-2">Stay in the Loop</h3>
+                        <p class="text-gray-600">Want to be first to try? Drop your details below</p>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                        <label for="contact-method" class="block text-sm font-semibold text-gray-700 mb-2">How would you like us to reach you? <span class="text-red-500">*</span></label>
+                        <div class="dropdown-container">
+                            <button type="button" class="dropdown-button" id="contact-method-button">
+                                <span id="contact-method-display">Select your preference</span>
+                                <svg class="dropdown-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                            <div class="dropdown-menu" id="contact-method-menu">
+                                <div class="dropdown-option" data-value="">Select your preference</div>
+                                <div class="dropdown-option" data-value="email">Email</div>
+                                <div class="dropdown-option" data-value="instagram">Instagram</div>
+                                <div class="dropdown-option" data-value="phone">Phone</div>
+                            </div>
+                            <input type="hidden" id="contact-method" name="contactMethod" value="">
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200" id="email-input" style="display: none;">
+                        <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">Email address <span class="text-red-500">*</span></label>
+                        <input type="email" id="email" name="email" placeholder="your@email.com" class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none text-base">
+                    </div>
+                    
+                    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200" id="instagram-input" style="display: none;">
+                        <label for="instagram" class="block text-sm font-semibold text-gray-700 mb-2">Instagram handle <span class="text-red-500">*</span></label>
+                        <input type="text" id="instagram" name="instagram" placeholder="@yourhandle" class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none text-base">
+                    </div>
+                    
+                    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200" id="phone-input" style="display: none;">
+                        <label for="phone" class="block text-sm font-semibold text-gray-700 mb-2">Phone number <span class="text-red-500">*</span></label>
+                        <input type="tel" id="phone" name="phone" placeholder="+44 7XXX XXX XXX" class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none text-base">
+                    </div>
+                    
+                    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                        <label class="flex items-center cursor-pointer">
+                            <input type="checkbox" name="gdprConsent" required class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary">
+                            <span class="ml-3 text-gray-700">I agree to be contacted about this project. Your info is safe with us - no spam ever! <span class="text-red-500">*</span></span>
+                        </label>
+                    </div>
+                    
+                    <div class="flex gap-4 mt-8">
+                        <button type="button" class="flex-1 bg-gray-200 text-gray-700 py-3 px-6 rounded-lg font-semibold hover:bg-gray-300 transition-colors" onclick="prevStep()">Back</button>
+                        <button type="submit" class="flex-1 bg-primary text-white py-3 px-6 rounded-lg font-semibold hover:bg-primary/90 transition-colors">Count Me In!</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Success Message -->
+    <div class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50" id="success-overlay" style="display: none;">
+        <div class="bg-white rounded-2xl p-8 mx-4 max-w-md text-center shadow-2xl">
+            <div class="text-6xl mb-4">🎉</div>
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">Thanks for your feedback!</h3>
+            <p class="text-gray-600 mb-6">We'll be in touch soon with updates. You're helping us build something amazing for micro-businesses like yours!</p>
+            <button class="bg-primary text-white py-3 px-6 rounded-lg font-semibold hover:bg-primary/90 transition-colors" onclick="closeSuccess()">Close</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
