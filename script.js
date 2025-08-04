@@ -889,7 +889,7 @@ function sendToSupabase(data) {
         needs_lead_time: data.needsLeadTime || '',
         lead_time: data.leadTime || '',
         slot_duration: data.slotDuration || '',
-        customer_struggles: data.customerStruggles || [],
+        customer_struggles: Array.isArray(data.customerStruggles) ? data.customerStruggles : (data.customerStruggles ? [data.customerStruggles] : []),
         reminders_help: data.remindersHelp || '',
         rating_price: parseInt(data.rating_price) || 0,
         rating_ease: parseInt(data.rating_ease) || 0,
@@ -902,6 +902,9 @@ function sendToSupabase(data) {
         phone: data.phone || '',
         gdpr_consent: data.gdprConsent === 'on' || false
     };
+    
+    // Log the data being sent for debugging
+    console.log('Sending to Supabase:', dbData);
     
     fetch(`${SUPABASE_URL}/rest/v1/beta_signups`, {
         method: 'POST',
@@ -923,6 +926,8 @@ function sendToSupabase(data) {
     .then(errorData => {
         if (errorData) {
             console.error('Supabase error details:', errorData);
+            console.error('Error message:', errorData.message);
+            console.error('Error details:', errorData.details);
         }
     })
     .catch(error => {
